@@ -15,28 +15,28 @@ public class FilmManager {
     private Map<Integer, Film> films = new HashMap<>();
 
     @Autowired
-    List<FilmPredicate> filmValidators;
+    private List<FilmPredicate> filmValidators;
 
     public Collection<Film> getAllFilms() {
         return films.values();
     }
 
     public Film createFilm(Film film) {
-        final var filmErrorValidator = filmValidators.stream()
-                .filter(validator -> validator.test(film)).findFirst();
-        filmErrorValidator.ifPresent(validator -> {
-            throw validator.errorObject();
-        });
+        filmValidators.stream()
+                .filter(validator -> validator.test(film)).findFirst()
+                .ifPresent(validator -> {
+                    throw validator.errorObject();
+                });
         films.put(film.getId(), film);
         return film;
     }
 
     public Film updateFilm(Film film) {
-        final var filmErrorValidator = filmValidators.stream()
-                .filter(validator -> validator.test(film)).findFirst();
-        filmErrorValidator.ifPresent(validator -> {
-            throw validator.errorObject();
-        });
+        filmValidators.stream()
+                .filter(validator -> validator.test(film)).findFirst()
+                .ifPresent(validator -> {
+                    throw validator.errorObject();
+                });
         films.put(film.getId(), film);
         return film;
     }

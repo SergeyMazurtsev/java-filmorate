@@ -15,7 +15,7 @@ public class UserManager {
     Map<Integer, User> users = new HashMap<>();
 
     @Autowired
-    List<UserPredicate> userValidators;
+    private List<UserPredicate> userValidators;
 
     public Collection<User> getAllUsers() {
         return users.values();
@@ -23,11 +23,11 @@ public class UserManager {
 
     public User createUser(User user) {
         User finalUser = user;
-        final var userError = userValidators.stream()
-                .filter(validator -> validator.test(finalUser)).findFirst();
-        userError.ifPresent(validator -> {
-            throw validator.errorObject();
-        });
+        userValidators.stream()
+                .filter(validator -> validator.test(finalUser)).findFirst()
+                .ifPresent(validator -> {
+                    throw validator.errorObject();
+                });
         user = checkingNameUser(user);
         users.put(user.getId(), user);
         return user;
@@ -35,11 +35,11 @@ public class UserManager {
 
     public User updateUser(User user) {
         User finalUser = user;
-        final var userError = userValidators.stream()
-                .filter(validator -> validator.test(finalUser)).findFirst();
-        userError.ifPresent(validator -> {
-            throw validator.errorObject();
-        });
+        userValidators.stream()
+                .filter(validator -> validator.test(finalUser)).findFirst()
+                .ifPresent(validator -> {
+                    throw validator.errorObject();
+                });
         user = checkingNameUser(user);
         users.put(user.getId(), user);
         return user;
