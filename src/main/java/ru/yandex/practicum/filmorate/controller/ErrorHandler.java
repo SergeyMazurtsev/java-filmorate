@@ -51,4 +51,22 @@ public class ErrorHandler {
     public ErrorResponse userLoginHandler(final IncorrectUserLoginException e) {
         return new ErrorResponse(e.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse enteredIdHandler(final IncorrectIdEnterException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse filmOrUserNotFoundHandler(final FilmOrUserNotFoundException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse userIdUpdateIncorrectHandler(final IncorrectUserIdUpdateException e) {
+        return new ErrorResponse(e.getMessage());
+    }
 }

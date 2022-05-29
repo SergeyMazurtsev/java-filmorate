@@ -14,6 +14,6 @@ public class FilmDurationValidator implements FilmPredicate {
 
     @Override
     public boolean test(Film film) {
-        return film.getDuration().isNegative();
+        return (film.getDuration() < 0);
     }
 }
