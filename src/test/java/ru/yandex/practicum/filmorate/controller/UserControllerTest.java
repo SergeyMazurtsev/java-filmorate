@@ -122,7 +122,7 @@ class UserControllerTest {
     public void deleteFriend() throws Exception {
         long i = createTestUser(user).getId();
         long i2 = createTestUser(user2).getId();
-        controller.addFriend(String.valueOf(i), String.valueOf(i2));
+        controller.addFriend(i, i2);
 
         mockMvc.perform(delete(url + "/{id}/friends/{friendId}", i, i2).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.friends").isArray())
@@ -135,8 +135,8 @@ class UserControllerTest {
         long i = createTestUser(user).getId();
         long i2 = createTestUser(user2).getId();
         long i3 = createTestUser(user3).getId();
-        controller.addFriend(String.valueOf(i), String.valueOf(i2));
-        controller.addFriend(String.valueOf(i), String.valueOf(i3));
+        controller.addFriend(i, i2);
+        controller.addFriend(i, i3);
 
         mockMvc.perform(get(url +"/{id}/friends", i).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isArray())
@@ -151,8 +151,8 @@ class UserControllerTest {
         long i = createTestUser(user).getId();
         long i2 = createTestUser(user2).getId();
         long i3 = createTestUser(user3).getId();
-        controller.addFriend(String.valueOf(i), String.valueOf(i2));
-        controller.addFriend(String.valueOf(i), String.valueOf(i3));
+        controller.addFriend(i, i2);
+        controller.addFriend(i, i3);
 
         mockMvc.perform(get(url +"/{id}/friends/common/{otherId}", i2, i3).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isArray())

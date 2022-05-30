@@ -2,7 +2,7 @@ package ru.yandex.practicum.filmorate.servis;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exceptions.IncorrectIdEnterException;
+import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
@@ -12,55 +12,59 @@ import java.util.stream.Collectors;
 
 @Service
 public class FilmService {
-    private FilmStorage filmManager;
-    private UserStorage userManager;
+    private FilmStorage filmStorage;
+    private UserStorage userStorage;
 
     @Autowired
-    public FilmService(FilmStorage filmManager, UserStorage userManager) {
-        this.filmManager = filmManager;
-        this.userManager = userManager;
+    public FilmService(FilmStorage filmStorage, UserStorage userStorage) {
+        this.filmStorage = filmStorage;
+        this.userStorage = userStorage;
     }
 
-    public Film addLikeToFilm(String idFilm, String idUser) {
-        long idF = checkInputIndex(idFilm);
-        long idU = checkInputIndex(idUser);
+    public Collection<Film> getAllFilms() {
+        return filmStorage.getAllFilms();
+    }
 
-        if (filmManager.checkContainFilmInFilms(idF) && userManager.checkContainUserInUsers(idU)) {
-            filmManager.getFilmById(idF).getLikes().add(idU);
+    public Film getFilmById(long index) {
+        return filmStorage.getFilmById(index);
+    }
+
+    public Film createFilm(Film film) {
+        return filmStorage.createFilm(film);
+    }
+
+    public Film updateFilm(Film film) {
+        return filmStorage.updateFilm(film);
+    }
+
+    public Film deleteFilm(long index) {
+        return filmStorage.deleteFilm(index);
+    }
+
+    public void deleteAllFilms() {
+        filmStorage.deleteAllFilms();
+    }
+
+    public Film addLikeToFilm(long idFilm, long idUser) {
+        if (filmStorage.checkContainFilmInFilms(idFilm) && userStorage.checkContainUserInUsers(idUser)) {
+            filmStorage.getFilmById(idFilm).getLikes().add(idUser);
         }
-        return filmManager.getFilmById(idF);
+        return filmStorage.getFilmById(idFilm);
     }
 
-    public Film deleteLikeFromFilm(String idFilm, String idUser) {
-        long idF = checkInputIndex(idFilm);
-        long idU = checkInputIndex(idUser);
-
-        if (filmManager.checkContainFilmInFilms(idF) && userManager.checkContainUserInUsers(idU)) {
-            if (filmManager.getFilmById(idF).getLikes().contains(idU)) {
-                filmManager.getFilmById(idF).getLikes().remove(idU);
+    public Film deleteLikeFromFilm(long idFilm, long idUser) {
+        if (filmStorage.checkContainFilmInFilms(idFilm) && userStorage.checkContainUserInUsers(idUser)) {
+            if (filmStorage.getFilmById(idFilm).getLikes().contains(idUser)) {
+                filmStorage.getFilmById(idFilm).getLikes().remove(idUser);
             }
         }
-        return filmManager.getFilmById(idF);
+        return filmStorage.getFilmById(idFilm);
     }
 
-    public List<Film> getPopularFilms(String count) {
-        long i = checkInputIndex(count);
-
-        return filmManager.getAllFilms().stream()
+    public List<Film> getPopularFilms(int count) {
+        return filmStorage.getAllFilms().stream()
                 .sorted((o1, o2) -> o2.getLikes().size() - o1.getLikes().size())
-                .limit(i)
+                .limit(count)
                 .collect(Collectors.toList());
     }
-
-    private long checkInputIndex(String index) {
-        long i;
-        try {
-            i = Long.parseLong(index);
-        } catch (final NumberFormatException e) {
-            throw new IncorrectIdEnterException(String.format("Параметр %s, долже содержать только цифры.",
-                    index));
-        }
-        return i;
-    }
-
 }

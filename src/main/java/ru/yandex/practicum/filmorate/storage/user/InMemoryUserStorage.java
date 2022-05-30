@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import ru.yandex.practicum.filmorate.exceptions.FilmOrUserNotFoundException;
-import ru.yandex.practicum.filmorate.exceptions.IncorrectUserIdUpdateException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.validate.UserPredicate;
 
@@ -31,7 +30,7 @@ public class InMemoryUserStorage implements UserStorage {
         if (users.containsKey(idIndex)) {
             return users.get(idIndex);
         } else {
-            throw new FilmOrUserNotFoundException(String.format("Пользователь с id - %n, не найден.", idIndex));
+            throw new FilmOrUserNotFoundException(String.format("Пользователь с id - %d, не найден.", idIndex));
         }
     }
 
@@ -58,7 +57,7 @@ public class InMemoryUserStorage implements UserStorage {
                     throw validator.errorObject();
                 });
         if (user.getId() < 0) {
-            throw new IncorrectUserIdUpdateException(String.format("Неверный id - %n.", user.getId()));
+            throw new FilmOrUserNotFoundException(String.format("Неверный id - %d.", user.getId()));
         }
         users.put(user.getId(), user);
         return user;
@@ -70,7 +69,7 @@ public class InMemoryUserStorage implements UserStorage {
             users.remove(index);
             return user;
         } else {
-            throw new FilmOrUserNotFoundException(String.format("Пользователь с id - %n, не найден.", index));
+            throw new FilmOrUserNotFoundException(String.format("Пользователь с id - %d, не найден.", index));
         }
     }
 
@@ -82,7 +81,7 @@ public class InMemoryUserStorage implements UserStorage {
         if (users.containsKey(index)) {
             return true;
         } else {
-            throw new FilmOrUserNotFoundException(String.format("Пользователь с id - %n, не найден.", index));
+            throw new FilmOrUserNotFoundException(String.format("Пользователь с id - %d, не найден.", index));
         }
     }
 

@@ -149,17 +149,17 @@ class FilmControllerTest {
         long u5 = userStorage.createUser(User.builder().login("Vas5").name("Vasya5").email("some@yandex.ru")
                 .birthday(LocalDate.of(1990, 01, 01)).build()).getId();
 
-        controller.postLikeToFilmByUser(String.valueOf(f1), String.valueOf(u1));
-        controller.postLikeToFilmByUser(String.valueOf(f1), String.valueOf(u2));
-        controller.postLikeToFilmByUser(String.valueOf(f1), String.valueOf(u3));
-        controller.postLikeToFilmByUser(String.valueOf(f1), String.valueOf(u4));
-        controller.postLikeToFilmByUser(String.valueOf(f1), String.valueOf(u5));
-        controller.postLikeToFilmByUser(String.valueOf(f2), String.valueOf(u2));
-        controller.postLikeToFilmByUser(String.valueOf(f2), String.valueOf(u3));
-        controller.postLikeToFilmByUser(String.valueOf(f2), String.valueOf(u4));
-        controller.postLikeToFilmByUser(String.valueOf(f2), String.valueOf(u5));
-        controller.postLikeToFilmByUser(String.valueOf(f3), String.valueOf(u4));
-        controller.postLikeToFilmByUser(String.valueOf(f3), String.valueOf(u5));
+        controller.postLikeToFilmByUser(f1, u1);
+        controller.postLikeToFilmByUser(f1, u2);
+        controller.postLikeToFilmByUser(f1, u3);
+        controller.postLikeToFilmByUser(f1, u4);
+        controller.postLikeToFilmByUser(f1, u5);
+        controller.postLikeToFilmByUser(f2, u2);
+        controller.postLikeToFilmByUser(f2, u3);
+        controller.postLikeToFilmByUser(f2, u4);
+        controller.postLikeToFilmByUser(f2, u5);
+        controller.postLikeToFilmByUser(f3, u4);
+        controller.postLikeToFilmByUser(f3, u5);
 
         mockMvc.perform(get(url + "/popular").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isArray())

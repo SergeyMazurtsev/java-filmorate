@@ -1,15 +1,14 @@
 package ru.yandex.practicum.filmorate.validate;
 
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exceptions.AllIllegalExceptions;
-import ru.yandex.practicum.filmorate.exceptions.IncorrectUserLoginException;
+import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 @Service
 public class UserLoginValidator implements UserPredicate {
     @Override
-    public AllIllegalExceptions errorObject() {
-        return new IncorrectUserLoginException();
+    public ValidationException errorObject() {
+        return new ValidationException("Логин не может быть пустым и содержать пробелы.");
     }
 
     @Override

@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.storage.film;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.FilmOrUserNotFoundException;
-import ru.yandex.practicum.filmorate.exceptions.IncorrectUserIdUpdateException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.validate.FilmPredicate;
 
@@ -29,7 +28,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         if (films.containsKey(idIndex)) {
             return films.get(idIndex);
         } else {
-            throw new FilmOrUserNotFoundException(String.format("Фильм с id - %n, не найден.", idIndex));
+            throw new FilmOrUserNotFoundException(String.format("Фильм с id - %d, не найден.", idIndex));
         }
     }
 
@@ -51,7 +50,7 @@ public class InMemoryFilmStorage implements FilmStorage {
                     throw validator.errorObject();
                 });
         if (film.getId() < 0) {
-            throw new IncorrectUserIdUpdateException(String.format("Неверный id - %n.", film.getId()));
+            throw new FilmOrUserNotFoundException(String.format("Неверный id - %d.", film.getId()));
         }
         films.put(film.getId(), film);
         return film;
@@ -63,7 +62,7 @@ public class InMemoryFilmStorage implements FilmStorage {
             films.remove(film.getId());
             return film;
         } else {
-            throw new FilmOrUserNotFoundException(String.format("Пользователь с id - %n, не найден.", index));
+            throw new FilmOrUserNotFoundException(String.format("Пользователь с id - %d, не найден.", index));
         }
     }
 
@@ -75,7 +74,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         if (films.containsKey(index)) {
             return true;
         } else {
-            throw new FilmOrUserNotFoundException(String.format("Пользователь с id - %n, не найден.", index));
+            throw new FilmOrUserNotFoundException(String.format("Пользователь с id - %d, не найден.", index));
         }
     }
 
