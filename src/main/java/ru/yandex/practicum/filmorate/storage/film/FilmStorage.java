@@ -18,5 +18,5 @@ public interface FilmStorage {
 
     void deleteAllFilms();
 
-    Boolean checkContainFilmInFilms(long index);
+    Boolean checkContainFilm(long index);
 }

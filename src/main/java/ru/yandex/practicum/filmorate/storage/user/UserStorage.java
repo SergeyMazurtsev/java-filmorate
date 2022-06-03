@@ -17,5 +17,5 @@ public interface UserStorage {
 
     void deleteAllUsers();
 
-    Boolean checkContainUserInUsers(long index);
+    Boolean checkContainUser(long index);
 }

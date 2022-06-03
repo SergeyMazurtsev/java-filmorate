@@ -7,7 +7,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.servis.FilmService;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -16,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/films")
+@Validated
 public class FilmController {
     private FilmService filmService;
 
@@ -67,7 +67,6 @@ public class FilmController {
     }
 
     @GetMapping("popular")
-    @Validated
     public List<Film> getPopularFilms(@RequestParam(value = "count", defaultValue = "10") @Positive int count) {
         return filmService.getPopularFilms(count);
     }
