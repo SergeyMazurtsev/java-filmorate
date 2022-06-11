@@ -1,15 +1,14 @@
 package ru.yandex.practicum.filmorate.validate;
 
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exceptions.AllIllegalExceptions;
-import ru.yandex.practicum.filmorate.exceptions.IncorrectUserEmailException;
+import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 @Service
 public class UserEmailValidation implements UserPredicate {
     @Override
-    public AllIllegalExceptions errorObject() {
-        return new IncorrectUserEmailException();
+    public ValidationException errorObject() {
+        return new ValidationException("Электронная почта не может быть пустой и должна содержать символ - @.");
     }
 
     @Override

@@ -1,8 +1,7 @@
 package ru.yandex.practicum.filmorate.validate;
 
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exceptions.AllIllegalExceptions;
-import ru.yandex.practicum.filmorate.exceptions.IncorrectFilmReleaseDateException;
+import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
@@ -15,7 +14,7 @@ public class FilmReleaseDateValidator implements FilmPredicate {
     }
 
     @Override
-    public AllIllegalExceptions errorObject() {
-        return new IncorrectFilmReleaseDateException();
+    public ValidationException errorObject() {
+        return new ValidationException("Дата релиза фильма должна быть не раньше 28 декабря 1895 года.");
     }
 }
