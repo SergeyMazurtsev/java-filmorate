@@ -8,9 +8,11 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-@Component
+@Component("userImMemoryStorage")
 public class InMemoryUserStorage implements UserStorage {
 
     private Map<Long, User> users = new HashMap<>();
@@ -48,6 +50,39 @@ public class InMemoryUserStorage implements UserStorage {
 
     public void deleteAllUsers() {
         users.clear();
+    }
+
+    @Override
+    public User putFriendToFriends(long idUser, long idFriend) {
+        getUserByID(idUser).getFriends().add(idFriend);
+        getUserByID(idFriend).getFriends().add(idUser);
+        return getUserByID(idUser);
+    }
+
+    @Override
+    public User deleteFriendFromFriends(long idUser, long idFriend) {
+        if (getUserByID(idUser).getFriends().contains(idFriend)
+                && getUserByID(idFriend).getFriends().contains(idUser)) {
+            getUserByID(idUser).getFriends().remove(idFriend);
+            getUserByID(idFriend).getFriends().remove(idUser);
+        }
+        return getUserByID(idUser);
+    }
+
+    @Override
+    public List<User> getAllFriendsOfUser(long idUser) {
+        return getAllUsers().stream()
+                .filter(user -> user.getFriends().contains(idUser))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<User> getCommonFriendsOfUsers(long idUser1, long idUser2) {
+        List<User> first = getAllUsers().stream()
+                .filter(user -> user.getFriends().contains(idUser1)).collect(Collectors.toList());
+        List<User> second = getAllUsers().stream()
+                .filter(user -> user.getFriends().contains(idUser2)).collect(Collectors.toList());
+        return first.stream().filter(e -> second.contains(e)).collect(Collectors.toList());
     }
 
     public Boolean checkContainUser(long index) {

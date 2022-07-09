@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.servis;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.FilmOrUserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -9,14 +10,13 @@ import ru.yandex.practicum.filmorate.validate.UserPredicate;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
     private UserStorage userStorage;
 
     @Autowired
-    public UserService(UserStorage userManager) {
+    public UserService(@Qualifier("DbUserH2Storage") UserStorage userManager) {
         this.userStorage = userManager;
     }
 
@@ -36,24 +36,24 @@ public class UserService {
     }
 
     public User createUser(User user) {
-        user = checkingNameUser(user);
         User finalUser = user;
         userValidators.stream()
                 .filter(validator -> validator.test(finalUser)).findFirst()
                 .ifPresent(validator -> {
                     throw validator.errorObject();
                 });
+        user = checkingNameUser(user);
         return userStorage.createUser(user);
     }
 
     public User updateUser(User user) {
-        user = checkingNameUser(user);
         User finalUser = user;
         userValidators.stream()
                 .filter(validator -> validator.test(finalUser)).findFirst()
                 .ifPresent(validator -> {
                     throw validator.errorObject();
                 });
+        user = checkingNameUser(user);
         if (user.getId() < 0) {
             throw new FilmOrUserNotFoundException(String.format("Неверный id - %d.", user.getId()));
         }
@@ -74,35 +74,26 @@ public class UserService {
 
     public User putFriendToFriends(long idUser, long idFriend) {
         if (checkContainUserInUsers(idFriend) && checkContainUserInUsers(idUser)) {
-            userStorage.getUserByID(idUser).getFriends().add(idFriend);
-            userStorage.getUserByID(idFriend).getFriends().add(idUser);
+            return userStorage.putFriendToFriends(idUser, idFriend);
+        } else {
+            throw new FilmOrUserNotFoundException("Пользователь не найден.");
         }
-        return userStorage.getUserByID(idUser);
     }
 
     public User deleteFriendFromFriends(long idUser, long idFriend) {
         if (checkContainUserInUsers(idFriend) && checkContainUserInUsers(idUser)) {
-            if (userStorage.getUserByID(idUser).getFriends().contains(idFriend)
-                    && userStorage.getUserByID(idFriend).getFriends().contains(idUser)) {
-                userStorage.getUserByID(idUser).getFriends().remove(idFriend);
-                userStorage.getUserByID(idFriend).getFriends().remove(idUser);
-            }
+            return userStorage.deleteFriendFromFriends(idUser, idFriend);
+        } else {
+            throw new FilmOrUserNotFoundException("Пользователь не найден.");
         }
-        return userStorage.getUserByID(idUser);
     }
 
     public List<User> getAllFriendsOfUser(long idUser) {
-        return userStorage.getAllUsers().stream()
-                .filter(user -> user.getFriends().contains(idUser))
-                .collect(Collectors.toList());
+        return userStorage.getAllFriendsOfUser(idUser);
     }
 
     public List<User> getCommonFriendsOfUsers(long idUser1, long idUser2) {
-        List<User> first = userStorage.getAllUsers().stream()
-                .filter(user -> user.getFriends().contains(idUser1)).collect(Collectors.toList());
-        List<User> second = userStorage.getAllUsers().stream()
-                .filter(user -> user.getFriends().contains(idUser2)).collect(Collectors.toList());
-        return first.stream().filter(e -> second.contains(e)).collect(Collectors.toList());
+        return userStorage.getCommonFriendsOfUsers(idUser1, idUser2);
     }
 
     public Boolean checkContainUserInUsers(long index) {
