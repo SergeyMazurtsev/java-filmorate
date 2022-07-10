@@ -3,23 +3,27 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @Data
+@Builder
 public class User {
-    private long id;
+    private Long id;
     private String email;
     private String login;
     private String name;
     private LocalDate birthday;
     private Set<Long> friends = new HashSet<>();
 
-    @Builder
-    public User (String login, String name, String email, LocalDate birthday) {
-        this.email = email;
-        this.login = login;
-        this.name = name;
-        this.birthday = birthday;
+    public Map<String, Object> toMap() {
+        Map<String, Object> result = new HashMap<>();
+        result.put("email", getEmail());
+        result.put("login", getLogin());
+        result.put("name", getName());
+        result.put("birthday", getBirthday());
+        return result;
     }
 }
